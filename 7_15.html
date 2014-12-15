@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>DrawFlow</title>
+<script src="jquery.min.js" ></script>
+<script src="jquery-ui.min.js" ></script>
+<script src="raphael.js" ></script>
+
+<script src="model.js" ></script>
+
+<script src="output.js" ></script>
+<script src="input.js" ></script>
+
+<script src="showInfo.js" ></script>
+<script src="infoHtml.js" ></script>
+<script src="changeInfo.js" ></script>
+
+
+<script src="load.js" ></script>
+<script src="drawNode.js" ></script>
+<script src="nodeDrag.js" ></script>
+<script src="save.js" ></script>
+
+<script src="processId.js" ></script>
+<script src="arrow.js" ></script>
+<script src="constant.js" ></script>
+
+<script src="drawLine.js" ></script>
+<script src="nodeClick.js" ></script>
+<script src="util.js" ></script>
+<script src="lineClick.js" ></script>
+<script src="textDrag.js" ></script>
+<script src="deleteElement.js" ></script>
+<style>
+	.td1
+	{
+		height:20px;
+		width:78px;
+		text-align:center;
+		background:rgb(240,240,240);
+		border:1px;
+		border-color:#000;
+		font-size:12px;
+		cursor:default;
+		font-family:Microsoft YaHei;
+	}
+	input::-webkit-input-placeholder 
+	{
+        font-family:Microsoft Yahei;
+        color: blue;
+	}
+	#next
+	{
+		cursor:pointer;	
+	}
+	#back
+	{
+		cursor:pointer;	
+	}
+	.td2
+	{
+		width:2px;
+	}
+	.tool
+	{
+		width:1920px;
+		margin-top:10px;
+	}
+	.div1
+	{
+		background:rgb(205,240,127);
+		width:140px;
+		font-size:12px;
+		font-family:Microsoft YaHei;		
+	}
+	body
+	{
+		font-size:12px;
+		font-family:Microsoft YaHei;	
+	}
+	.tool_part
+	{
+		height:20px;
+		vertical-align:top;
+		cursor:move;
+	}
+	.flow_area
+	{
+		width:100%;
+		text-align:left;
+	}
+	.tool_line
+	{
+		cursor:default;
+	}
+	body
+	{
+		//background: rgb(238,238,238);
+	}
+</style>
+<script>
+function exit()
+{
+	if(confirm("请确保你已经保存后再推出..."))
+	{
+		window.open("","_self");
+		window.close();	
+	}
+}
+</script>
+</head>
+
+<body>
+
+<table width="480px" id="table1">
+  <tr>
+    <td class="td1"><button onclick="javascript:save()">Save</button></td>
+    <td class="td2">.</td>
+    <td class="td1"><button onclick="javascript:input()">Input</button></td>
+    <td class="td2">.</td>
+    <td class="td1" ><button onclick="javascript:output()">Output</button></td>
+    <td class="td2">.</td>
+    <td class="td1" ><button onclick="javascript:exit()">Exit</button></td>
+    <td class="td2">.</td>
+    <td class="td1">Delete</td>
+    <td class="td2">.</td>
+    <td class="td1" >Test</td>
+    <td class="td2">.</td>
+  </tr>
+</table>
+<div class="tool" id="tool">
+	<table>
+    	<tr  valign="top">
+        	<td width="140px" id="tool_td">
+            	<div class="div1" >ToolBar</div>
+                <br />
+                <div class="tool_line" type="next" onclick="javascript:drawLine('black')" id="black">
+               		<img src="images/48/flow_sequence.png"width="20px" />LinkLine(black)
+                </div>
+                <br />
+                <div class="tool_line" type="next" onclick="javascript:drawLine('red')" id="red">
+               		<img src="images/48/flow_sequence.png"width="20px" />LinkLine(red)
+                </div>
+                <br />
+                <div class="tool_line" type="next" onclick="javascript:drawLine('green')" id="green">
+               		<img src="images/48/flow_sequence.png"width="20px" />LinkLine(green)
+                </div>
+                <br />
+                <hr width="140px" />
+                <div class="tool_part" type="blackLine">
+               		<img src="images/48/flow_sequence.png" width="20px" />LinkLine(black)
+                </div>
+                <br />
+                <div class="tool_part" type="redLine">
+               		<img src="images/48/flow_sequence.png" width="20px" />LinkLine(red)
+                </div>
+                <br />
+                <div class="tool_part" type="greenLine">
+               		<img src="images/48/flow_sequence.png" width="20px" />LinkLine(green)
+                </div>
+                <br />
+                <div class="tool_part" type="start">
+               		<img src="images/48/start_event_empty.png" width="20px" />StartNode
+                </div>
+                <br />
+                <div class="tool_part" type="end">
+               		<img src="images/48/end_event_terminate.png" width="20px" />EndNode
+                </div>
+                <br />
+                <div class="tool_part" type="single">
+               		<img src="images/48/task_empty.png" width="20px" />OneNode
+                </div>
+                <br />
+                <div class="tool_part" type="double">
+               		<img src="images/48/task_empty_green.png" width="20px" />TwoNode
+                </div>
+                <br />
+                <div class="tool_part" type="many">
+               		<img src="images/48/task_empty_yellow.png" width="20px" />ThreeNode
+                </div>
+                <br />
+                 <div class="tool_part" type="judge">
+               		<img src="images/48/task_wait.png" width="20px" />Judge
+                </div>
+                <br />
+                <br/>
+            </td>
+            <td width="180px"> 
+            	This is picture
+            </td>
+            <td width="1600px">
+            	<div class="flow_area" id="flow" >.</div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="info">
+</div>
+<br /><br />
+<div id = "process">
+     <table border="2">
+         <tr>
+			 <td>流程名称:</td><td><input type="text" id="name" name="name" /></td>
+			 <td>流程版本：</td><td><input type="text" id="version" name="version" /></td>
+         </tr>
+         <tr>
+             <td>流程类型:</td><td><input type="text" id="process_type" name="process_type" /></td>
+             <td>管理员岗位:</td><td><input type="text" id="admin_id" name="admin_id" /></td>
+         </tr>
+         <tr>
+              <td>流程简介:</td><td><input type="text" id="process_content" name="process_content" /></td>
+			  <td>渲染脚本:</td><td><input type="text" id="process_script" name="process_script" /></td>
+         </tr>
+          <tr>
+              <td>流程编号:</td><td><input type="text" id="main" name="id" readonly /></td>
+			  <td>.</td><td>.</td>
+         </tr>
+    </table>
+</div>
+</body>
+</html>
